@@ -1,0 +1,11 @@
+obstacle_range: 3.0
+raytrace_range: 3.5
+
+robot_radius: 0.3
+
+inflation_radius: 4.0
+cost_scaling_factor: 3.0
+
+map_type: costmap
+observation_sources: scan
+scan: {sensor_frame: lidar_on_base_link, data_type: LaserScan, topic: /ifooddifbotv1/laser/scan, marking: true, clearing: true}

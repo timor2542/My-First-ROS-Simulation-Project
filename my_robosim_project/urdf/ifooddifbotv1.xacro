@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+<robot name="ifooddifbotv1" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+    <!-- Color of Material -->
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <material name="grey">
+    <color rgba="0.3 0.3 0.3 1"/>
+  </material>
+
+  <material name="skyblue">
+    <color rgba="0 0 1 1"/>
+  </material>
+
+   <!-- Add Base Pose -->
+    <link name = "base_link">
+        <visual>
+            <origin xyz = "0 0 0" rpy = "0 0 0"/>
+            <geometry>
+                <mesh filename="package://my_robosim_project/meshes/base_link.stl"/>
+            </geometry>
+            <material name="white"/>
+        </visual>
+        <inertial>
+            <mass value="1"/>
+            <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+        <collision>
+            <origin xyz = "0 0 0" rpy = "0 0 0"/>
+            <geometry>
+                 <mesh filename="package://my_robosim_project/meshes/base_link.stl"/>
+            </geometry>
+        </collision>
+    </link>
+
+   <!-- Add Left Wheel Pose -->
+    <link name = "left_wheel_link">
+        <visual>
+            <origin xyz = "0 0 0" rpy = "-1.5708 0 0"/>
+            <geometry>
+                <cylinder radius = "0.2" length = "0.1"/>
+            </geometry>
+            <material name="grey"/>
+        </visual>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+         <collision>
+            <origin xyz = "0 0 0" rpy = "-1.5708 0 0"/>
+            <geometry>
+                <cylinder radius = "0.2" length = "0.1"/>
+            </geometry>
+        </collision>
+    </link>
+
+   <!-- Add Parent-Child Link between Base and Left Wheel-->
+    <joint name = "left_wheel_joint" type = "continuous">
+        <origin xyz = "0 0.35 0.2" rpy = "0 0 0"/>
+        <parent link = "base_link"/>
+        <child link = "left_wheel_link"/>
+        <limit effort = "30" velocity="10"/>
+        <axis rpy="0 0 0" xyz = "0 1 0"/>
+    </joint>
+
+    <link name = "right_wheel_link">
+        <visual>
+            <origin xyz = "0 0 0" rpy = "-1.5708 0 0"/>
+            <geometry>
+                <cylinder radius = "0.2" length = "0.1"/>
+            </geometry>
+            <material name="grey"/>
+        </visual>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+         <collision>
+            <origin xyz = "0 0 0" rpy = "-1.5708 0 0"/>
+            <geometry>
+                <cylinder radius = "0.2" length = "0.1"/>
+            </geometry>
+        </collision>
+    </link>
+
+   <!-- Add Parent-Child Link between Base and Right Wheel-->
+    <joint name = "right_wheel_joint" type = "continuous">
+        <origin xyz = "0 -0.35 0.2" rpy = "0 0 0"/>
+        <parent link = "base_link"/>
+        <child link = "right_wheel_link"/>
+        <limit effort = "30" velocity="10"/>
+        <axis rpy="0 0 0" xyz = "0 1 0"/>
+    </joint>  
+
+   <!-- Add LiDAR Sensor Pose -->
+    <link name = "lidar_on_base_link">
+        <visual>
+            <origin xyz = "0 0 0" rpy = "0 0 0"/>
+            <geometry>
+                <cylinder radius = "0.1" length = "0.1"/>
+            </geometry>
+            <material name="skyblue"/>
+        </visual>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+        <collision>
+            <origin xyz = "0 0 0" rpy = "0 0 0"/>
+            <geometry>
+                 <cylinder radius = "0.1" length = "0.1"/>
+            </geometry>
+        </collision>
+    </link>
+
+   <!-- Add Parent-Child Link between Base and LiDAR-->
+    <joint name = "lidar_on_base_joint" type = "fixed">
+        <origin xyz = "0 0 0.65" rpy = "0 0 0"/> 
+        <parent link = "base_link"/>
+        <child link = "lidar_on_base_link"/>
+        <limit effort = "0" velocity="0"/>
+        <axis rpy="0 0 0" xyz = "0 0 0"/>
+    </joint>
+
+    <!-- Paint Base Link Color -->
+    <gazebo reference="base_link">  
+        <material>Gazebo/White</material>
+    </gazebo>
+
+    <!-- Paint Left Wheel Link Color -->
+    <gazebo reference="left_wheel_link">  
+        <material>Gazebo/Grey</material>
+        <mu1 value ="10000"/>
+        <mu2 value = "10000"/>        
+    </gazebo>
+    
+    <!-- Paint Right Wheel Link Color -->
+    <gazebo reference="right_wheel_link">  
+        <material>Gazebo/Grey</material>-->
+        <mu1 value ="10000"/>
+        <mu2 value = "10000"/>
+    </gazebo>
+
+    <!-- Paint LiDAR Sensor Link Color -->
+    <gazebo reference="lidar_on_base_link">  
+        <material>Gazebo/SkyBlue</material>
+    </gazebo>
+
+    <!--Installing Differential Drive Controller Plugin-->
+     <gazebo>
+        <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>20</updateRate>
+        <leftJoint>left_wheel_joint</leftJoint>
+        <rightJoint>right_wheel_joint</rightJoint>
+        <wheelSeparation>0.7</wheelSeparation>
+        <wheelDiameter>0.4</wheelDiameter>
+        <torque>1</torque>
+        <commandTopic>cmd_vel</commandTopic>
+        <odometryTopic>odom</odometryTopic>
+        <odometryFrame>odom</odometryFrame>
+        <robotBaseFrame>base_link</robotBaseFrame>
+        <publishWheelTF>false</publishWheelTF>
+        <publishWheelJointState>false</publishWheelJointState>
+        <rosDebugLevel>na</rosDebugLevel>
+        <wheelAcceleration>0</wheelAcceleration>
+        <wheelTorque>1</wheelTorque>
+        <odometrySource>world</odometrySource>
+        <publishOdomTF>true</publishOdomTF>
+        <publishTf>1</publishTf>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/ifooddifbotv1</robotNamespace>
+    </plugin>
+    </gazebo>
+
+    <!--Installing LiDAR Sensor-->
+    <gazebo reference="lidar_on_base_link">
+        <sensor type="ray" name="ifooddifbot_laser_sensor">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>false</visualize>
+        <update_rate>20</update_rate>
+        <ray>
+         <scan>
+            <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-3.14</min_angle>
+                <max_angle>3.14</max_angle>
+            </horizontal>
+        </scan>
+        <range>
+             <min>0.2</min>
+             <max>10.0</max>
+             <resolution>0.01</resolution>
+        </range>
+        <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+        </noise>
+        </ray>
+        <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+        <topicName>/ifooddifbotv1/laser/scan</topicName>
+        <frameName>lidar_on_base_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+    <!--Installing IMU Sensor-->
+  <gazebo reference="base_link">
+    <gravity>true</gravity>
+    <sensor name="ifooddifbot_imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>ifooddifbotv1/imu</topicName>
+        <bodyName>base_link</bodyName>
+        <updateRateHZ>10.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>base_links</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+</robot>
