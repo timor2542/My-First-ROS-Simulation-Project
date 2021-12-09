@@ -25,7 +25,7 @@
 * std_msgs
 * tf
 ## 3. What I did the basic learning goals.
-* สร้างสภาพแวดล้อม (Environment) และโลก (World) ด้วยโปรแกรม Gazebo แล้วบันทึกให้เป็นไฟล์ URDF
+* สร้างสภาพแวดล้อม (Environment) และโลก (World) ด้วยโปรแกรม Gazebo แล้วบันทึกให้เป็นไฟล์ World
 * เขียนโปรแกรมสร้างการจำลองหุ่นยนต์แบบ Differiantial Drive 2 ล้อ แล้วบันทึกเป็นไฟล์ XACRO
 * ใช้ movebase เป็น package ในการทำ Navigation
 * ใช้ Laser ของ hokyo เป็น Topic ในการทำ Gmapping เพื่อสร้างแผนที่ และบันทึกเป็นไฟล์ pgm
